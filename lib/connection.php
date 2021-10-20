@@ -18,7 +18,7 @@
 			if( self::$conn != null ){
 				return self::$conn;
 			}else{
-				self::$conn = new PDO('mysql:host=localhost;dbname=qiosku','kali','');
+				self::$conn = new PDO('mysql:host=localhost;dbname=qiosku','database','root');
 				return self::$conn;
 			}
 		}

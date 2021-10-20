@@ -16,6 +16,7 @@
 		//Signup
 		public static function Signup( $param )
 		{
+			$res['signup'] = array();
 			$u_name = isset($param['u_name']) ? $param['u_name'] : die('Name is null');
 			$u_username = isset($param['u_username']) ? $param['u_username'] : die("Username is null");
 			$u_phone = $param['u_phone'];
@@ -35,14 +36,17 @@
 				$statement = self::$con->prepare($query);
 				if( $statement->execute(['u_name'=>$u_name,'u_email'=>$u_email,'u_phone'=>$u_phone,'u_username'=>$u_username,'u_password'=>Tama64::__encrypt(md5($u_password)),'u_img'=>$u_img,'token'=>$token,'role'=>$role]) )
 				{
-					self::print(['signup_status'=>true,'msg'=>'Signup Successfuly']);
+					// self::print(['signup_status'=>true,'msg'=>'Signup Successfuly']);
+					array_push($res['signup'], array('signup_status'=>true,'msg'=>'Signup Successfuly.'));
 				}else
 				{
-					self::print(['signup_status'=>false,'msg'=>'Signup Unsuccessfuly']);
+					// self::print(['signup_status'=>false,'msg'=>'Signup Unsuccessfuly']);
+					array_push($res['signup'], array('signup_status'=>false,'msg'=>'Signup Unsuccessfuly.'));
 				}
 			}else{
-				self::print(['signup_status'=>false,'msg'=>'User already exists']);
+					array_push($res['signup'], array('signup_status'=>false,'msg'=>'User already exists.'));
 			}
+			self::print($res);
 		}
 
 		private static function checkUser( $u_username )
@@ -63,6 +67,7 @@
 
 		//Login
 		public static function Login( $param ){
+			$res['login'] = array();
 			$username = $param['u_username'] != null ? $param['u_username'] : self::error(['status'=>false,'msg'=>'Username is null']);
 			$password = $param['u_password'] != null ? $param['u_password'] : self::error(['status'=>false,'msg'=>'Password is null']);
 
@@ -72,11 +77,15 @@
 			$nil->execute(['u_username'=>$username]);
 			$nol = $nil->fetchAll();
 			if( $nol[0]['u_password'] == Tama64::__encrypt(md5($password)) ){
-				self::print(['login_status'=>true,'msg'=>'Login Successfuly.','u_username'=>$nol[0]['u_username'],'u_name'=>$nol[0]['u_name'],'token'=>$nol[0]['token'],'role'=>$nol[0]['role']]);
+				// self::print(['login_status'=>true,'msg'=>'Login Successfuly.','u_username'=>$nol[0]['u_username'],'u_name'=>$nol[0]['u_name'],'token'=>$nol[0]['token'],'role'=>$nol[0]['role']]);
+				array_push($res['login'], array('login_status'=>true,'msg'=>'Login Successfuly.'
+					,'u_username'=>$nol[0]['u_username'],'u_name'=>$nol[0]['u_name'],'token'=>$nol[0]['token'],'role'=>$nol[0]['role'],'u_email'=>$nol[0]['u_email'],'u_phone'=>$nol[0]['u_phone'],'u_address'=>$nol[0]['u_address'],'id'=>$nol[0]['id']
+				));
 			}else{
-				self::print(['login_status'=>false,'msg'=>'Login Unsuccessfuly.']);
+				// self::print(['login_status'=>false,'msg'=>'Login Unsuccessfuly.']);
+				array_push($res['login'],array('login_status'=>false,'msg'=>'Login Unsuccessfuly.'));
 			}
-
+			self::print($res);
 		}
 		static function print($msg){
 			echo json_encode($msg);
