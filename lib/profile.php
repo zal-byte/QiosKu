@@ -26,6 +26,8 @@
 		public static function myData( $u_username )
 		{
 
+			$res['fetchProfile'] = array();
+
 			$query = "SELECT * FROM users WHERE u_username = :u_username";
 
 			$statement = self::$con->prepare( $query );
@@ -35,15 +37,16 @@
 			if( count( $stat ) > 0 && $stat != null )
 			{
 
-				self::print( ['fetchProfile'=> $stat, 'status'=>true ] );
+				// self::print( ['fetchProfile'=> $stat, 'status'=>true ] );
+				array_push($res['fetchProfile'], array('status'=>true,'data'=>$stat[0]));
 
 			}else
 			{
 
-				self::print( ['fetchProfile'=>null, 'status'=>false, 'msg'=>'Something went wrong'] );
-
+				// self::print( ['fetchProfile'=>null, 'status'=>false, 'msg'=>'Something went wrong'] );
+				array_push($res['fetchProfile'], array('status'=>false,'msg'=>'Something went wrong.'));
 			}
-
+			self::print($res);
 		}
 
 		public static function myRole( $u_username )

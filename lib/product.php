@@ -14,6 +14,8 @@
 		}
 		public static function showProduct( $additional = null){
 			
+			$res['showProduct'] = array();
+
 			$query = "select * from products order by p_id desc";
 
 			// $query .= isset($additional['manual']) ? (isset($additional['manual']['query']) ? $additional['manual']['query'] : self::echo(['showProduct'=>['status'=>false,'msg'=>'Null Queries']])) : self::default();
@@ -25,10 +27,12 @@
 			$stat = self::$con->prepare($query);
 			if ( $stat->execute() )
 			{
-				self::echo(['showProduct'=>true,"data"=>$stat->fetchall(PDO::FETCH_ASSOC)]);
+				// self::echo(['showProduct'=>true,"data"=>$stat->fetchall(PDO::FETCH_ASSOC)]);
+				array_push($res['showProduct'], array('status'=>true,'data'=>$stat->fetchAll(PDO::FETCH_ASSOC)));
 			}else
 			{
-				self::echo(['showProduct'=>false]);
+				// self::echo(['showProduct'=>false]);
+				array_push($res['showProduct'], array('status'=>false,'msg'=>'Cannot get product data'));
 			}
 			// if($param!=null)
 			// {
@@ -61,6 +65,7 @@
 			// 	}
 
 			// }
+			self::print($res);
 
 		}
 
